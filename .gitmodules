@@ -1,3 +1,6 @@
 [submodule "automakewild"]
 	path = automakewild
 	url = git@github.com:earlchew/automakewild.git
+[submodule "automakeheadercheck"]
+	path = automakeheadercheck
+	url = git@github.com:earlchew/automakeheadercheck.git
