@@ -171,15 +171,24 @@ main(int argc, char **argv)
 
     ++arg;
 
+    /* Round the time up to the next minute because crontab schedules
+     * only have a granularity of 1 minute.
+     */
+
+    time += 60 - 1;
+    time -= time % 60;
+
     struct CivilTime civilTime_, *civilTime = &civilTime_;
 
     if (!initCivilTime(civilTime, time))
         die("Unable to convert time %lu", time);
 
     if (*arg) {
+
         if (crontime(civilTime, JitterOpt, *arg))
             die("Unabled to schedule %s", *arg);
         ++arg;
+
     } else {
 
         char *linePtr = 0;

@@ -212,7 +212,12 @@ initCivilTimeTm_(struct CivilTime *self, time_t aTime)
 
     struct Interval *interval = civilTimeInterval_(self);
 
-    time_t time = aTime / 60 * 60;
+    if (aTime % 60) {
+        errno = EINVAL;
+        goto Finally;
+    }
+
+    time_t time = aTime;
 
     struct tm *tmPtr = localtime(&time);
     if (!tmPtr)
