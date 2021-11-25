@@ -59,6 +59,85 @@ Sat Jan 29 13:28:03 PST 2000
 Mon May 15 06:43:00 PDT 2000
 ```
 
+#### Motivation
+
+[Ksh](https://github.com/ksh93/ksh/blob/master/src/lib/libast/tm/tmxdate.c#L521)
+can interpret crontab schedules but has a few limitations:
+* Only schedules against the current time of day
+* Schedules across daylight savings changes can be surprising
+
+During daylight savings changes that cause the clock
+to jump backwards can result in events to being
+skipped. For example, in the US/Pacific timezone,
+time advances as follows during such a change:
+
+```
+% export TZ='US/Pacific'
+
+% date +'%s %c' -d @$((972802800 + 3600 * 0))
+972802800 Sun 29 Oct 2000 12:00:00 AM PDT
+
+% date +'%s %c' -d @$((972802800 + 3600 * 1))
+972806400 Sun 29 Oct 2000 01:00:00 AM PDT
+
+% date +'%s %c' -d @$((972802800 + 3600 * 2))
+972810000 Sun 29 Oct 2000 01:00:00 AM PST
+
+% date +'%s %c' -d @$((972802800 + 3600 * 3))
+972813600 Sun 29 Oct 2000 02:00:00 AM PST
+```
+
+An hourly schedule evaluated at 12:59 AM PDT should
+result in an event at 01:00 AM PDT, but instead
+results in an event at 01:00 AM PST.
+
+```
+% export TZ='US/Pacific'
+% sudo date +'%s %c' -s @$(( 972806400 - 60  ))
+% date +'%s %c' -d @$(ksh -c "printf '%(%s)T\n' '0 * * * *' ")
+972806340 Sun 29 Oct 2000 12:59:00 AM PDT
+972810000 Sun 29 Oct 2000 01:00:00 AM PST
+
+% echo $(( 972810000 - 972806340 ))
+3660
+
+```
+
+During daylight savings changes that cause the clock to
+jump forwards can result in events being scheduled in the past.
+For example, in the US/Pacific timezone, time advances
+as follows during such a change:
+
+```
+% date +'%s %c' -d @$((954662400 + 3600 * 0))
+954662400 Sun 02 Apr 2000 12:00:00 AM PST
+
+% date +'%s %c' -d @$((954662400 + 3600 * 1))
+954666000 Sun 02 Apr 2000 01:00:00 AM PST
+
+% date +'%s %c' -d @$((954662400 + 3600 * 2))
+954669600 Sun 02 Apr 2000 03:00:00 AM PDT
+
+% date +'%s %c' -d @$((954662400 + 3600 * 3))
+954673200 Sun 02 Apr 2000 04:00:00 AM PDT
+```
+
+An hourly schedule evaluated at 01:30 AM PST should
+result in an event at 03:00 AM PDT, but instead
+results in an event 30 minutes earlier at 01:00 AM PST
+rather than 30 minutes later.
+
+```
+% export TZ='US/Pacific'
+% sudo date +'%s %c' -s @$(( 954669600 - 60 * 30 ))
+% date +'%s %c' -d @$(ksh -c "printf '%(%s)T\n' '0 * * * *' ")
+954667800 Sun 02 Apr 2000 01:30:00 AM PST
+954666000 Sun 02 Apr 2000 01:00:00 AM PST
+
+% echo $(( 954666000 - 954667800 ))
+-1800
+```
+
 #### Jitter
 
 Unless overridden by the `--jitter 0` option, a small amount of jitter
