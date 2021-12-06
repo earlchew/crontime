@@ -1,13 +1,13 @@
 crontime
 ========
 
-Compute matching event times in the local timezone for crontab schedules.
+Calculate local timezone events for crontab schedules.
 
 #### Background
 
 Crontab schedules are an established way to describe schedules
 for recurring activities. The crontime program computes the
-next matching event time in the local timezone for a crontab schedule,
+next event time in the local timezone for a crontab schedule,
 taking into account daylight savings changes.
 
 #### Dependencies
