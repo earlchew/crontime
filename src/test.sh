@@ -204,6 +204,9 @@ test_jitter()
     local LOWER=$(say "$HISTOGRAM" | awk '$2 == 962517480')
     local UPPER=$(say "$HISTOGRAM" | awk '$2 == 962517481')
 
+    [ -n "$LOWER" ] || LOWER="0"
+    [ -n "$UPPER" ] || UPPER="0"
+
     check [ 68 -le ${LOWER% *} ]
     check [ 82 -ge ${LOWER% *} ]
 
