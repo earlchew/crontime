@@ -154,7 +154,7 @@ main(int argc, char **argv)
 {
     int rc = -1;
 
-    srand(getpid());
+    srandom(getpid());
 
     char **arg = parseOptions(argc, argv);
     if (!arg)
