@@ -188,6 +188,20 @@ The following table shows some examples:
 30 0-4 * * *  UTC 0830, UTC 0930, UTC 1030, UTC 1130
 ```
 
+The following graphs show a visualisation of scheduling during this
+daylight savings change. The blue lines show local time relative to
+midnight of the morning of the change highlighting the jump from 0200
+to 0300. The red lines show the behaviour for both an explicit hourly
+schedule (ie `0-23`) and an implicit hourly schedule using a wildcard
+(ie `*`). Just after the hour, the delay is 59 minutes, and just before
+the hour, the delay is 1 minute. This is the expected result for events
+scheduled hourly, even when `0200` is skipped.
+
+![](https://github.com/earlchew/crontime/blob/main/Spring-DST-0-23.png)
+
+![](https://github.com/earlchew/crontime/blob/main/Spring-DST-Wildcard.png)
+
+
 #### Ending Daylight Savings
 
 Typically during autumn, a daylight savings change will rewind the local
@@ -224,3 +238,23 @@ The following table shows some examples:
 30 2   * * *  UTC 1030
 30 0-3 * * *  UTC 0730, UTC 0830, UTC 1030, UTC 1130
 ```
+
+The following graphs show a visualisation of scheduling during this
+daylight savings change. The blue lines show local time relative to
+midnight of the morning of the change highlighting the jump from 0200
+to 0100. The red lines show the behaviour for both an explicit hourly
+schedule (ie `0-23`) and an implicit hourly schedule using a wildcard
+(ie `*`).
+
+With the explicit hourly schedule (ie `0-23`), just after the first
+occurence of 0100, the next hourly event is delayed by an extra hour
+because 0100 is repeated. This avoids having events at `0100` being
+repeated over two consecutive hours.
+
+With an implicit hourly schedule (ie `*`), after the first occurence
+of 0100, the next hourly event occurs as expected with events at `0100`
+being repeated over two consective hours.
+
+![](https://github.com/earlchew/crontime/blob/main/Autumn-DST-0-23.png)
+
+![](https://github.com/earlchew/crontime/blob/main/Autumn-DST-Wildcard.png)
