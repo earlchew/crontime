@@ -399,7 +399,8 @@ time_t
 querySchedule(
     const struct Schedule *self,
     const struct CivilTime *aCivilTime,
-    time_t aJitterPeriod)
+    time_t aJitterPeriod,
+    int *aJitter)
 {
     int rc = -1;
 
@@ -407,6 +408,8 @@ querySchedule(
 
     if (queryScheduleYear_(self, schedTime))
         goto Finally;
+
+    int jitter = 0;
 
     time_t scheduled = queryCivilTimeUtc(schedTime);
 
@@ -448,13 +451,16 @@ querySchedule(
 
         int random = rand();
 
-        time_t jitter = period * (1 - sqrt(random / (1.0 * RAND_MAX)));
+        jitter = period * (1 - sqrt(random / (1.0 * RAND_MAX)));
 
         if ((random % 2) && lhsPeriod)
-            scheduled -= jitter;
-        else
-            scheduled += jitter;
+            jitter = 0 - jitter;
+
+        scheduled += jitter;
     }
+
+    if (aJitter)
+        *aJitter = jitter;
 
     rc = 0;
 

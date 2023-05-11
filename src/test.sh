@@ -34,40 +34,40 @@ test_every_minute_and_one_second()
 {
     # Sat Jan  1 00:00:00 PST 2000
     # Sat Jan  1 00:00:00 PST 2000
-    check [ 946713600 -eq "$(crontime -j 0 946713600 '* * * * *')" ]
+    check [ '946713600 0' = "$(crontime -j 0 946713600 '* * * * *')" ]
 
     # Sat Jan  1 00:00:01 PST 2000
     # Sat Jan  1 00:01:00 PST 2000
-    check [ 946713660 -eq "$(crontime -j 0 946713601 '* * * * *')" ]
+    check [ '946713660 0' = "$(crontime -j 0 946713601 '* * * * *')" ]
 }
 
 test_every_minute()
 {
     # Sat Jan  1 00:00:00 PST 2000
-    check [ 946713600 -eq "$(crontime -j 0 946713600 '* * * * *')" ]
+    check [ '946713600 0' = "$(crontime -j 0 946713600 '* * * * *')" ]
 
     # Sun Apr  2 03:00:00 PDT 2000
-    check [ 954669600 -eq "$(crontime -j 0 954669600 '* * * * *')" ]
+    check [ '954669600 0' = "$(crontime -j 0 954669600 '* * * * *')" ]
 
     # Sun Oct 29 01:00:00 PST 2000
-    check [ 972810000 -eq "$(crontime -j 0 972810000 '* * * * *')" ]
+    check [ '972810000 0' = "$(crontime -j 0 972810000 '* * * * *')" ]
 
     # Sun Dec 31 23:59:00 PST 2000
-    check [ 978335940 -eq "$(crontime -j 0 978335940 '* * * * *')" ]
+    check [ '978335940 0' = "$(crontime -j 0 978335940 '* * * * *')" ]
 }
 
 test_spill_over()
 {
     # Sat Jan  1 00:00:00 PST 2000
     # Wed Feb  2 01:01:00 PST 2000
-    check [ 949482060 -eq "$(crontime -j 0 946713600 '1-58 1-22 2-28 2-11 *')" ]
+    check [ '949482060 0' = "$(crontime -j 0 946713600 '1-58 1-22 2-28 2-11 *')" ]
 
     # Tue Nov 28 22:58:00 PST 2000
-    check [ 975481080 -eq "$(crontime -j 0 975481080 '1-58 1-22 2-28 2-11 *')" ]
+    check [ '975481080 0' = "$(crontime -j 0 975481080 '1-58 1-22 2-28 2-11 *')" ]
 
     # Tue Nov 28 22:59:00 PST 2000
     # Fri Feb  2 01:01:00 PST 2001
-    check [ 981104460 -eq "$(crontime -j 0 975481140 '1-58 1-22 2-28 2-11 *')" ]
+    check [ '981104460 0' = "$(crontime -j 0 975481140 '1-58 1-22 2-28 2-11 *')" ]
 }
 
 test_spring_dst()
@@ -76,26 +76,26 @@ test_spring_dst()
 
     #  Sat Jan  1 22:59:00 PST 2000
     #  Sat Apr  1 01:00:00 PST 2000
-    check [ 954579600 -eq "$(crontime -j 0 $((946796280+60)) "$SCHEDULE")" ]
+    check [ '954579600 0' = "$(crontime -j 0 $((946796280+60)) "$SCHEDULE")" ]
 
     #  Sun Apr  1 01:01:00 PST 2000
     #  Sat Apr  1 01:30:00 PST 2000
-    check [ 954581400 -eq "$(crontime -j 0 $((954579600+60)) "$SCHEDULE")" ]
+    check [ '954581400 0' = "$(crontime -j 0 $((954579600+60)) "$SCHEDULE")" ]
 
     #  Sat Apr  1 01:31:00 PST 2000
     #  Sat Apr  1 02:00:00 PST 2000
-    check [ 954583200 -eq "$(crontime -j 0 $((954581400+60)) "$SCHEDULE")" ]
+    check [ '954583200 0' = "$(crontime -j 0 $((954581400+60)) "$SCHEDULE")" ]
 
     # Note that 02:00 is selected by the schedule, but 03:00 is not
     # selected. The following test verifies that 03:00 is skipped.
 
     #  Sat Apr  1 02:01:00 PST 2000
     #  Sat Apr  1 02:30:00 PST 2000
-    check [ 954585000 -eq "$(crontime -j 0 $((954583200+60)) "$SCHEDULE")" ]
+    check [ '954585000 0' = "$(crontime -j 0 $((954583200+60)) "$SCHEDULE")" ]
 
     #  Sat Apr  1 02:31:00 PST 2000
     #  Sun Apr  2 01:00:00 PST 2000
-    check [ 954666000 -eq "$(crontime -j 0 $((954585000+60)) "$SCHEDULE")" ]
+    check [ '954666000 0' = "$(crontime -j 0 $((954585000+60)) "$SCHEDULE")" ]
 
     # The next two tests verify that 02:00 is selected even though
     # daylight savings causes the local clock to skip immediately
@@ -104,27 +104,27 @@ test_spring_dst()
 
     #  Sun Apr  2 01:01:00 PST 2000
     #  Sun Apr  2 01:30:00 PST 2000
-    check [ 954667800 -eq "$(crontime -j 0 $((954666000+60)) "$SCHEDULE")" ]
+    check [ '954667800 0' = "$(crontime -j 0 $((954666000+60)) "$SCHEDULE")" ]
 
     #  Sun Apr  2 01:31:00 PST 2000
     #  Sun Apr  2 02:00:00 PDT 2000 Artificial
     #  Sun Apr  2 03:00:00 PDT 2000
-    check [ 954669600 -eq "$(crontime -j 0 $((954667800+60)) "$SCHEDULE")" ]
+    check [ '954669600 0' = "$(crontime -j 0 $((954667800+60)) "$SCHEDULE")" ]
 
     #  Sun Apr  2 01:01:00 PST 2000
     #  Sun Apr  2 03:00:00 PDT 2000
-    check [ 954669600 -eq "$(crontime -j 0 $((954666000+60)) '0 * * * *')" ]
+    check [ '954669600 0' = "$(crontime -j 0 $((954666000+60)) '0 * * * *')" ]
 
     #  Sun Apr  2 03:01:00 PDT 2000
     #  Sun Apr  2 03:30:00 PDT 2000
-    check [ 954671400 -eq "$(crontime -j 0 $((954669600+60)) "$SCHEDULE")" ]
+    check [ '954671400 0' = "$(crontime -j 0 $((954669600+60)) "$SCHEDULE")" ]
 
     # This is a final check that confirms that 03:00 is not present
     # in the test scheduled.
 
     #  Mon Apr  3 03:01:00 PDT 2000
     #  Mon May  1 01:00:00 PDT 2000
-    check [ 957168000 -eq "$(crontime -j 0 $((954756000+60)) "$SCHEDULE")" ]
+    check [ '957168000 0' = "$(crontime -j 0 $((954756000+60)) "$SCHEDULE")" ]
 }
 
 test_fall_dst()
@@ -133,55 +133,55 @@ test_fall_dst()
 
     # Sat Jul  1 22:59:00 PDT 2000
     # Sun Oct 29 01:00:00 PDT 2000
-    check [ 972806400 -eq "$(crontime -j 0 $((962517480+60)) "$SCHEDULE")" ]
+    check [ '972806400 0' = "$(crontime -j 0 $((962517480+60)) "$SCHEDULE")" ]
 
     # Sun Oct 29 01:01:00 PDT 2000
     # Sun Oct 29 01:00:00 PST 2000 Not Skipped
-    check [ 972810000 -eq "$(crontime -j 0 $((972806400+60)) '0 * * * *')" ]
+    check [ '972810000 0' = "$(crontime -j 0 $((972806400+60)) '0 * * * *')" ]
 
     # Sun Oct 29 01:01:00 PST 2000 Not Skipped
     # Sun Oct 29 02:00:00 PST 2000
-    check [ 972813600 -eq "$(crontime -j 0 $((972810000+60)) '0 * * * *')" ]
+    check [ '972813600 0' = "$(crontime -j 0 $((972810000+60)) '0 * * * *')" ]
 
     # Sun Oct 29 02:01:00 PST 2000
     # Sun Oct 29 03:00:00 PST 2000
-    check [ 972817200 -eq "$(crontime -j 0 $((972813600+60)) '0 * * * *')" ]
+    check [ '972817200 0' = "$(crontime -j 0 $((972813600+60)) '0 * * * *')" ]
 
     # Sun Oct 29 01:01:00 PDT 2000
     # Sun Oct 29 01:30:00 PDT 2000
-    check [ 972808200 -eq "$(crontime -j 0 $((972806400+60)) "$SCHEDULE")" ]
+    check [ '972808200 0' = "$(crontime -j 0 $((972806400+60)) "$SCHEDULE")" ]
 
     # Sun Oct 29 01:30:00 PDT 2000
     # Sun Oct 29 01:00:00 PST 2000 Skipped
     # Sun Oct 29 01:30:00 PST 2000 Skipped
     # Sun Oct 29 02:00:00 PST 2000
-    check [ 972813600 -eq "$(crontime -j 0 $((972808200+60)) "$SCHEDULE")" ]
+    check [ '972813600 0' = "$(crontime -j 0 $((972808200+60)) "$SCHEDULE")" ]
 
     # Sun Oct 29 02:01:00 PST 2000
     # Sun Oct 29 02:30:00 PST 2000
-    check [ 972815400 -eq "$(crontime -j 0 $((972813600+60)) "$SCHEDULE")" ]
+    check [ '972815400 0' = "$(crontime -j 0 $((972813600+60)) "$SCHEDULE")" ]
 
     # Sun Oct 29 02:31:00 PST 2000
     # Sun Oct 29 03:00:00 PST 2000
-    check [ 972817200 -eq "$(crontime -j 0 $((972815400+60)) "$SCHEDULE")" ]
+    check [ '972817200 0' = "$(crontime -j 0 $((972815400+60)) "$SCHEDULE")" ]
 }
 
 test_stdin()
 {
     # Sat Jan  1 00:00:00 PST 2000
     # Wed Feb  2 01:01:00 PST 2000
-    check [ 949482060 -eq "$(
+    check [ '949482060 0' = "$(
         say '1-58 1-22 2-28 2-11 *' | crontime -j 0 946713600)" ]
 
     # Tue Nov 28 22:58:00 PST 2000
-    check [ 975481080 -eq "$(
+    check [ '975481080 0' = "$(
         say '1-58 1-22 2-28 2-11 *' | crontime -j 0 975481080)" ]
 
     # Tue Nov 28 22:59:00 PST 2000
     # Fri Feb  2 01:01:00 PST 2001
     check [ "$(
-        say 981104460
-        say 981104400
+        say 981104460 0
+        say 981104400 0
     )" = "$(
         {
             say '1-58 1-22 2-28 2-11 *'
@@ -198,7 +198,7 @@ test_jitter()
     local HISTOGRAM=$(
         for _ in {1..100} ; do
             crontime --jitter 2 962517480 "$SCHEDULE"
-        done | sort | uniq -c
+        done | cut -d' ' -f1 | sort | uniq -c
     )
 
     local LOWER=$(say "$HISTOGRAM" | awk '$2 == 962517480')

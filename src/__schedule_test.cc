@@ -51,7 +51,10 @@ class ScheduleTest : public ::testing::Test
 protected:
 
     time_t testSchedule_(
-        struct Schedule *aSchedule, time_t aTime, time_t aJitterPeriod = 0) {
+        struct Schedule *aSchedule,
+        time_t aTime,
+        time_t aJitterPeriod = 0,
+        int *aJitter = 0) {
 
         int rc = -1;
 
@@ -62,7 +65,7 @@ protected:
         if (!initCivilTime(civilTime, aTime))
             goto Finally;
 
-        scheduled = querySchedule(aSchedule, civilTime, aJitterPeriod);
+        scheduled = querySchedule(aSchedule, civilTime, aJitterPeriod, aJitter);
         if (-1 == scheduled)
             goto Finally;
 
@@ -431,7 +434,7 @@ TEST_F(ScheduleTest, OneSidedJitter_1_Hour)
 
     EXPECT_EQ(schedule, initSchedule(schedule, "0 * * * *"));
 
-    time_t now, scheduled;
+    time_t now, deadline, scheduled;
 
     /* Sat Jan  1 00:00:00 PST 2000 */
     now = 946713600;
@@ -443,10 +446,13 @@ TEST_F(ScheduleTest, OneSidedJitter_1_Hour)
     int trials = RUNNING_ON_VALGRIND ? 1 : 1000;
 
     for (int ix = 0; ix < trials; ++ix) {
-        scheduled = testSchedule_(schedule, now, jitterPeriod);
-        EXPECT_LE(now, scheduled);
+        int jitter;
+        deadline = testSchedule_(schedule, now, jitterPeriod, &jitter);
+        scheduled = testSchedule_(schedule, now, 0);
+        EXPECT_LE(now, deadline);
+        EXPECT_EQ(deadline - jitter, scheduled);
 
-        int delay = scheduled - now;
+        int delay = deadline - now;
 
         sum += delay;
         sumsq += delay * delay;
@@ -475,7 +481,7 @@ TEST_F(ScheduleTest, OneSidedJitter_3_Minutes)
 
     EXPECT_EQ(schedule, initSchedule(schedule, "*/3 * * * *"));
 
-    time_t now, scheduled;
+    time_t now, deadline, scheduled;
 
     /* Sat Jan  1 00:00:00 PST 2000 */
     now = 946713600;
@@ -487,10 +493,13 @@ TEST_F(ScheduleTest, OneSidedJitter_3_Minutes)
     int trials = RUNNING_ON_VALGRIND ? 1 : 1000;
 
     for (int ix = 0; ix < trials; ++ix) {
-        scheduled = testSchedule_(schedule, now, jitterPeriod);
-        EXPECT_LE(now, scheduled);
+        int jitter;
+        deadline = testSchedule_(schedule, now, jitterPeriod, &jitter);
+        scheduled = testSchedule_(schedule, now, 0);
+        EXPECT_LE(now, deadline);
+        EXPECT_EQ(deadline - jitter, scheduled);
 
-        int delay = scheduled - now;
+        int delay = deadline - now;
 
         sum += delay;
         sumsq += delay * delay;
@@ -521,7 +530,7 @@ TEST_F(ScheduleTest, TwoSidedJitter_3_Minutes)
 
     EXPECT_EQ(schedule, initSchedule(schedule, "*/3 * * * *"));
 
-    time_t now, scheduled;
+    time_t now, deadline, scheduled;
 
     /* Sat Jan  1 00:01:00 PST 2000 */
     now = 946713600 + 60;
@@ -533,10 +542,13 @@ TEST_F(ScheduleTest, TwoSidedJitter_3_Minutes)
     int trials = RUNNING_ON_VALGRIND ? 1 : 1000;
 
     for (int ix = 0; ix < trials; ++ix) {
-        scheduled = testSchedule_(schedule, now, jitterPeriod);
-        EXPECT_LE(now, scheduled);
+        int jitter;
+        deadline = testSchedule_(schedule, now, jitterPeriod, &jitter);
+        scheduled = testSchedule_(schedule, now, 0);
+        EXPECT_LE(now, deadline);
+        EXPECT_EQ(deadline - jitter, scheduled);
 
-        int delay = scheduled - now;
+        int delay = deadline - now;
 
         sum += delay;
         sumsq += delay * delay;

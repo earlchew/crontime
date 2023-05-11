@@ -34,6 +34,7 @@
 
 #include <errno.h>
 #include <getopt.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -78,11 +79,14 @@ crontime(
     if (!initSchedule(&schedule, aSchedule))
         goto Finally;
 
-    time_t scheduled = querySchedule(&schedule, aCivilTime, aJitterPeriod);
+    int jitter = INT_MIN;
+
+    time_t scheduled = querySchedule(
+        &schedule, aCivilTime, aJitterPeriod, &jitter);
     if (-1 == scheduled)
         goto Finally;
 
-    printf("%lld\n", (long long) scheduled);
+    printf("%lld %d\n", (long long) scheduled, jitter);
 
     rc = 0;
 

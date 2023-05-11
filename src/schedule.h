@@ -63,7 +63,8 @@ time_t
 querySchedule(
     const struct Schedule *self,
     const struct CivilTime *aCivilTime,
-    time_t aJitterPeriod);
+    time_t aJitterPeriod,
+    int *aJitter);
 
 /* -------------------------------------------------------------------------- */
 END_C_SCOPE;
