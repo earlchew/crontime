@@ -10,3 +10,6 @@
 [submodule "tz"]
 	path = tz
 	url = https://github.com/eggert/tz
+[submodule "autoconf-archive"]
+	path = autoconf-archive
+	url = git@github.com:earlchew/autoconf-archive.git
