@@ -47,7 +47,7 @@ COMMON_CFLAGS     += -fdata-sections -ffunction-sections
 COMMON_CFLAGS     += -Wmissing-prototypes -Wmissing-declarations
 COMMON_CXXFLAGS    = $(COMMON_FLAGS) -std=gnu++0x
 COMMON_CXXFLAGS   += -Wno-variadic-macros -Wno-long-long
-COMMON_LINKFLAGS   = -Wl,--gc-sections
+COMMON_LINKFLAGS   =
 TEST_LIBS          = libcrontime_.la libtz_.la libgoogletest.la
 TEST_FLAGS         = -DUNITTEST -I ../googletest/googletest/include
 TEST_CFLAGS        = $(TEST_FLAGS) $(COMMON_CFLAGS)
