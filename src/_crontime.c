@@ -39,6 +39,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#ifdef __APPLE__
+#define program_invocation_short_name getprogname()
+#endif
+
 /* -------------------------------------------------------------------------- */
 static const int DefaultJitterOpt = 5 * 60;
 
