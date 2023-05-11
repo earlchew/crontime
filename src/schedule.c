@@ -454,11 +454,11 @@ querySchedule(
         if (period > aJitterPeriod)
             period = aJitterPeriod;
 
-        int random = rand();
+        int rand = random();
 
-        jitter = period * (1 - sqrt(random / (1.0 * RAND_MAX)));
+        jitter = period * (1 - sqrt(rand / ((1UL<<31) - 1.0)));
 
-        if ((random % 2) && lhsPeriod)
+        if ((rand % 2) && lhsPeriod)
             jitter = 0 - jitter;
 
         scheduled += jitter;
