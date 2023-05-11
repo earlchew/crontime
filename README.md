@@ -40,21 +40,29 @@ arguments:
 #### Examples
 
 ```
+% unset LANG
 % export TZ=US/Pacific
 % NOW=949181283
 % date -d @$NOW
 Sat Jan 29 13:28:03 PST 2000
-% SCHEDULED=$(crontime 949181283 '*/5 * * * *')
+% set -- $(crontime $NOW '*/5 * * * *')
+% DEADLINE=$1
+% JITTER=$2
+% SCHEDULED=$(( DEADLINE - JITTER ))
 % date -d @$SCHEDULED
 Sat Jan 29 13:30:00 PST 2000
 ```
 
 ```
+% unset LANG
 % export TZ=US/Pacific
 % NOW=949181283
 % date -d @$NOW
 Sat Jan 29 13:28:03 PST 2000
-% SCHEDULED=$(crontime 949181283 '43 6-9 15-20 5,6 *')
+% set -- $(crontime $NOW '43 6-9 15-20 5,6 *')
+% DEADLINE=$1
+% JITTER=$2
+% SCHEDULED=$(( DEADLINE - JITTER ))
 % date -d @$SCHEDULED
 Mon May 15 06:43:00 PDT 2000
 ```
@@ -72,19 +80,20 @@ skipped. For example, in the US/Pacific timezone,
 time advances as follows during such a change:
 
 ```
+% unset LANG
 % export TZ='US/Pacific'
 
 % date +'%s %c' -d @$((972802800 + 3600 * 0))
-972802800 Sun 29 Oct 2000 12:00:00 AM PDT
+972802800 Sun Oct 29 00:00:00 2000
 
 % date +'%s %c' -d @$((972802800 + 3600 * 1))
-972806400 Sun 29 Oct 2000 01:00:00 AM PDT
+972806400 Sun Oct 29 01:00:00 2000
 
 % date +'%s %c' -d @$((972802800 + 3600 * 2))
-972810000 Sun 29 Oct 2000 01:00:00 AM PST
+972810000 Sun Oct 29 01:00:00 2000
 
 % date +'%s %c' -d @$((972802800 + 3600 * 3))
-972813600 Sun 29 Oct 2000 02:00:00 AM PST
+972813600 Sun Oct 29 02:00:00 2000
 ```
 
 An hourly schedule evaluated at 12:59 AM PDT should
@@ -92,11 +101,12 @@ result in an event at 01:00 AM PDT, but instead
 results in an event at 01:00 AM PST.
 
 ```
+% unset LANG
 % export TZ='US/Pacific'
 % sudo date +'%s %c' -s @$(( 972806400 - 60  ))
 % date +'%s %c' -d @$(ksh -c "printf '%(%s)T\n' '0 * * * *' ")
-972806340 Sun 29 Oct 2000 12:59:00 AM PDT
-972810000 Sun 29 Oct 2000 01:00:00 AM PST
+972806340 Sun Oct 29 12:59:00 2000
+972810000 Sun Oct 29 01:00:00 2000
 
 % echo $(( 972810000 - 972806340 ))
 3660
@@ -110,16 +120,16 @@ as follows during such a change:
 
 ```
 % date +'%s %c' -d @$((954662400 + 3600 * 0))
-954662400 Sun 02 Apr 2000 12:00:00 AM PST
+954662400 Sun Apr 02 12:00:00 2000
 
 % date +'%s %c' -d @$((954662400 + 3600 * 1))
-954666000 Sun 02 Apr 2000 01:00:00 AM PST
+954666000 Sun Apr 02 01:00:00 2000
 
 % date +'%s %c' -d @$((954662400 + 3600 * 2))
-954669600 Sun 02 Apr 2000 03:00:00 AM PDT
+954669600 Sun Apr 02 03:00:00 2000
 
 % date +'%s %c' -d @$((954662400 + 3600 * 3))
-954673200 Sun 02 Apr 2000 04:00:00 AM PDT
+954673200 Sun Apr 02 04:00:00 2000
 ```
 
 An hourly schedule evaluated at 01:30 AM PST should
@@ -131,8 +141,8 @@ rather than 30 minutes later.
 % export TZ='US/Pacific'
 % sudo date +'%s %c' -s @$(( 954669600 - 60 * 30 ))
 % date +'%s %c' -d @$(ksh -c "printf '%(%s)T\n' '0 * * * *' ")
-954667800 Sun 02 Apr 2000 01:30:00 AM PST
-954666000 Sun 02 Apr 2000 01:00:00 AM PST
+954667800 Sun Apr 02 01:30:00 2000
+954666000 Sun Apr 02 01:00:00 2000
 
 % echo $(( 954666000 - 954667800 ))
 -1800
