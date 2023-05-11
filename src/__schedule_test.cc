@@ -36,7 +36,9 @@
 #include <errno.h>
 #include <stdlib.h>
 
+#ifndef RUNNING_ON_VALGRIND
 #include <valgrind/valgrind.h>
+#endif
 
 /* -------------------------------------------------------------------------- */
 class ScheduleTest : public ::testing::Test
