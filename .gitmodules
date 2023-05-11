@@ -7,3 +7,6 @@
 [submodule "googletest"]
 	path = googletest
 	url = git@github.com:google/googletest.git
+[submodule "tz"]
+	path = tz
+	url = https://github.com/eggert/tz
