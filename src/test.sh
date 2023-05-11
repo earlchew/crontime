@@ -30,6 +30,17 @@ check()
     "$@"
 }
 
+test_every_minute_and_one_second()
+{
+    # Sat Jan  1 00:00:00 PST 2000
+    # Sat Jan  1 00:00:00 PST 2000
+    check [ 946713600 -eq "$(crontime -j 0 946713600 '* * * * *')" ]
+
+    # Sat Jan  1 00:00:01 PST 2000
+    # Sat Jan  1 00:01:00 PST 2000
+    check [ 946713660 -eq "$(crontime -j 0 946713601 '* * * * *')" ]
+}
+
 test_every_minute()
 {
     # Sat Jan  1 00:00:00 PST 2000
@@ -206,6 +217,7 @@ main()
 
     trap '[ $? -eq 0 ] || { set +x; backtrace; }' EXIT
 
+    test_every_minute_and_one_second
     test_every_minute
     test_spill_over
     test_spring_dst

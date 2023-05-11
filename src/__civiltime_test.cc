@@ -216,6 +216,19 @@ TEST_F(CivilTimeTest, Init2100)
 }
 
 /* -------------------------------------------------------------------------- */
+TEST_F(CivilTimeTest, InitNotAligned)
+{
+    static char TZ[] = "TZ=US/Pacific";
+
+    putenv(TZ);
+
+    struct CivilTime civilTime_, *civilTime = &civilTime_;
+
+    EXPECT_FALSE(initCivilTime(civilTime, 949301938));
+    EXPECT_EQ(EINVAL, errno);
+}
+
+/* -------------------------------------------------------------------------- */
 TEST_F(CivilTimeTest, AdvanceTime)
 {
     static char TZ[] = "TZ=US/Pacific";
@@ -224,8 +237,8 @@ TEST_F(CivilTimeTest, AdvanceTime)
 
     struct CivilTime civilTime_, *civilTime = &civilTime_;
 
-    EXPECT_EQ(civilTime, initCivilTime(civilTime, 949301938));
-    /* Sun Jan 30 22:58:58 PST 2000 */
+    EXPECT_EQ(civilTime, initCivilTime(civilTime, 949301880));
+    /* Sun Jan 30 22:58:00 PST 2000 */
     EXPECT_EQ(949301938 - 58, queryCivilTimeUtc(civilTime));
     EXPECT_EQ(2000, queryCivilTimeCalendar(civilTime).mYear);
     EXPECT_EQ(1, queryCivilTimeCalendar(civilTime).mMonth);
