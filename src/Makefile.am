@@ -50,6 +50,9 @@ COMMON_CXXFLAGS   += -Wno-variadic-macros -Wno-long-long
 COMMON_LINKFLAGS   =
 TEST_LIBS          = libcrontime_.la libtz_.la libgoogletest.la
 TEST_FLAGS         = -DUNITTEST -I ../googletest/googletest/include
+if !VALGRIND_ENABLED
+TEST_FLAGS        += -DRUNNING_ON_VALGRIND=0
+endif
 TEST_CFLAGS        = $(TEST_FLAGS) $(COMMON_CFLAGS)
 TEST_CXXFLAGS      = $(TEST_FLAGS) $(COMMON_CXXFLAGS)
 TESTS              = $(check_PROGRAMS) $(check_SCRIPTS)
