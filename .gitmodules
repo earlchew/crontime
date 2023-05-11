@@ -1,0 +1,3 @@
+[submodule "automakewild"]
+	path = automakewild
+	url = git@github.com:earlchew/automakewild.git
