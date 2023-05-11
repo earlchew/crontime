@@ -45,6 +45,7 @@ COMMON_FLAGS      += -Wno-parentheses -Wshadow
 COMMON_CFLAGS      = $(COMMON_FLAGS) -std=gnu99
 COMMON_CFLAGS     += -fdata-sections -ffunction-sections
 COMMON_CFLAGS     += -Wmissing-prototypes -Wmissing-declarations
+COMMON_CFLAGS     += -Wno-unknown-warning-option
 COMMON_CXXFLAGS    = $(COMMON_FLAGS) -std=gnu++0x
 COMMON_CXXFLAGS   += -Wno-variadic-macros -Wno-long-long
 COMMON_LINKFLAGS   =
