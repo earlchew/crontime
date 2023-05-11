@@ -415,22 +415,23 @@ querySchedule(
 
     /* If a jitter time is requested, try to build a triangular probability
      * density function centred around the scheduled time. Determine the
-     * duration until the scheduled time, and the duration from the scheduled
-     * time to the jitter time.
+     * duration until the scheduled time, and the jitter window which
+     * comprises the period from the scheduled time to the next
+     * scheduled time.
      */
 
     if (aJitterPeriod) {
-        struct CivilTime jitterTime_, *jitterTime = &jitterTime_;
+        struct CivilTime nextSchedTime_, *nextSchedTime = &nextSchedTime_;
 
-        if (!initCivilTime(jitterTime, scheduled + 60))
+        if (!initCivilTime(nextSchedTime, scheduled + 60))
             goto Finally;
 
-        if (queryScheduleYear_(self, jitterTime))
+        if (queryScheduleYear_(self, nextSchedTime))
             goto Finally;
 
-        time_t jittered = queryCivilTimeUtc(jitterTime);
+        time_t nextScheduled = queryCivilTimeUtc(nextSchedTime);
 
-        if (jittered <= scheduled) {
+        if (nextScheduled <= scheduled) {
             errno = EINVAL;
             goto Finally;
         }
@@ -438,9 +439,13 @@ querySchedule(
         /* The lhs period might be zero if there is no time until
          * the scheduled time. In this case, use a one-sided
          * probably density function.
+         *
+         * The rhs period is limited to half the jitter window to
+         * leave time for the subsequent occurence to be equally
+         * early or late.
          */
 
-        time_t rhsPeriod = jittered - scheduled;
+        time_t rhsPeriod = (nextScheduled - scheduled) / 2;
         time_t lhsPeriod = scheduled - queryCivilTimeUtc(aCivilTime);
 
         time_t period =

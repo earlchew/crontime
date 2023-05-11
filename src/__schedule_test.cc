@@ -506,7 +506,7 @@ TEST_F(ScheduleTest, OneSidedJitter_3_Minutes)
     }
 
     if (!RUNNING_ON_VALGRIND) {
-        int observedPeriod = 3 * 60;
+        int observedPeriod = 3 * 60 / 2;
 
         sum = trials * observedPeriod / 3;
 
@@ -524,7 +524,7 @@ TEST_F(ScheduleTest, OneSidedJitter_3_Minutes)
 }
 
 /* -------------------------------------------------------------------------- */
-TEST_F(ScheduleTest, TwoSidedJitter_3_Minutes)
+TEST_F(ScheduleTest, TwoSidedJitter_1_Minute)
 {
     struct Schedule schedule_, *schedule = &schedule_;
 
@@ -532,8 +532,8 @@ TEST_F(ScheduleTest, TwoSidedJitter_3_Minutes)
 
     time_t now, deadline, scheduled;
 
-    /* Sat Jan  1 00:01:00 PST 2000 */
-    now = 946713600 + 60;
+    /* Sat Jan  1 00:02:00 PST 2000 */
+    now = 946713600 + 2 * 60;
 
     time_t jitterPeriod = 3 * 60;
 
@@ -555,7 +555,7 @@ TEST_F(ScheduleTest, TwoSidedJitter_3_Minutes)
     }
 
     if (!RUNNING_ON_VALGRIND) {
-        int observedPeriod = 2 * 60;
+        int observedPeriod = 1 * 60;
 
         int mean = sum / trials;
         int var = sumsq / trials - mean * mean;
